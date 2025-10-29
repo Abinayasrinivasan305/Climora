@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import WeatherCard from "./components/WeatherCard";
-import SearchBar from "./components/SearchBar"; // ✅ ensure using your component
+import SearchBar from "./components/SearchBar";
+import Notification from "./components/Notification"; // ✅ NEW
 import "./App.css";
 
 const App = () => {
   const [city, setCity] = useState("Bengaluru");
   const [weather, setWeather] = useState(null);
   const [background, setBackground] = useState("/images/default.jpg");
-  const [loading, setLoading] = useState(false); // ✅ new state for loading
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState(""); // ✅ new state
 
-  // Fetch weather details for the entered city
+  const weatherNotes = {
+    0: "☀️ Clear sky — perfect weather to plan outdoor activities!",
+    1: "🌤️ Mainly clear — enjoy a bright day outside!",
+    2: "⛅ Partly cloudy — still pleasant for a walk.",
+    3: "☁️ Overcast — calm day for reading indoors.",
+    45: "🌫️ Fog — drive carefully, visibility is low.",
+    48: "🌫️ Rime fog — stay warm, icy conditions ahead.",
+    51: "🌦️ Light drizzle — keep an umbrella handy!",
+    61: "🌧️ Rain — perfect for cozy indoor plans ☕",
+    71: "❄️ Snow — bundle up and stay cozy!",
+    80: "🌦️ Rain showers — umbrella recommended!",
+    95: "⛈️ Thunderstorm alert — stay indoors!",
+  };
+
   const fetchWeather = async (cityName) => {
     try {
-      setLoading(true); // ✅ start loading
+      setLoading(true);
       setWeather(null);
 
       const geoRes = await fetch(
@@ -21,36 +36,37 @@ const App = () => {
       );
       const geoData = await geoRes.json();
 
-      if (!geoData.results || geoData.results.length === 0) {
-        alert("Location not found! Please enter a valid city, state, or country.");
+      if (!geoData.results?.length) {
+        setNotification("⚠️ City not found! Please try another one.");
         setLoading(false);
         return;
       }
 
       const { latitude, longitude, timezone, name, country, admin1 } = geoData.results[0];
-
       const weatherRes = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&timezone=${timezone}`
       );
       const weatherData = await weatherRes.json();
 
       if (weatherData.current_weather) {
+        const data = weatherData.current_weather;
         setWeather({
-          ...weatherData.current_weather,
+          ...data,
           timezone,
           location: `${name}${admin1 ? ", " + admin1 : ""}, ${country}`,
         });
-        updateBackground(weatherData.current_weather.weathercode);
+        updateBackground(data.weathercode);
+        setNotification(weatherNotes[data.weathercode] || "🌈 Weather updated successfully!");
       }
 
-      setLoading(false); // ✅ stop loading
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching weather:", error);
+      setNotification("⚠️ Error fetching data. Please try again later.");
       setLoading(false);
     }
   };
 
-  // Set background based on weather code
   const updateBackground = (code) => {
     const images = {
       0: "/images/clearsky.gif",
@@ -68,7 +84,6 @@ const App = () => {
     setBackground(images[code] || "/images/default.gif");
   };
 
-  // Default city weather on load
   useEffect(() => {
     fetchWeather(city);
   }, []);
@@ -90,11 +105,9 @@ const App = () => {
       }}
     >
       <Navbar />
-
+      <Notification message={notification} onClose={() => setNotification("")} /> {/* ✅ Toast */}
       <div className="weather-container">
         <SearchBar onSearch={handleSearch} />
-
-        {/* ✅ Loading Spinner */}
         {loading ? (
           <div className="loader-container">
             <div className="spinner"></div>

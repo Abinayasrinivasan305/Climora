@@ -54,6 +54,43 @@
   backdrop-filter: blur(8px);
 }
 
+
+.note-card {
+  margin-top: 1.5rem;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  padding: 12px 20px;
+  border-radius: 15px;
+  color: #fff;
+  font-weight: 500;
+  text-align: center;
+  width: 90%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeIn 0.6s ease-in;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .note-card {
+    font-size: 0.9rem;
+    padding: 10px 14px;
+  }
+}
+
+
 /* 📱 Responsive Adjustments */
 @media (max-width: 768px) {
   .weather-container {

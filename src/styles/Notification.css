@@ -1,0 +1,45 @@
+.notification-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  padding: 12px 20px;
+  border-radius: 16px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  animation: slideFade 0.5s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
+  z-index: 1000;
+  max-width: 90%;
+}
+
+@keyframes slideFade {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* ✅ Make sure it looks good on mobile too */
+@media (max-width: 768px) {
+  .notification-toast {
+    top: 15px;
+    right: 10px;
+    left: 10px;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+}
