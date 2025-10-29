@@ -136,10 +136,10 @@ const App = () => {
       <Navbar />
 
 
-      {/* 🔔 Notification Toast */}
+      {/* Notification Toast */}
       <Notification message={notification} onClose={() => setNotification("")} />
 
-      {/* 🌤️ Main Weather Section */}
+      {/* Main Weather Section */}
       <div className="weather-container">
         <SearchBar onSearch={handleSearch} />
         {loading ? (
